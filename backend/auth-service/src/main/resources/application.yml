@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: auth-service
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URI:http://localhost:8888}
+  datasource:
+    url: ${AUTH_DB_URL:jdbc:postgresql://localhost:5432/auth_db}
+    username: ${POSTGRES_USER:momentum}
+    password: ${POSTGRES_PASSWORD:momentum}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate.jdbc.time_zone: UTC
+  flyway:
+    enabled: true
+server:
+  port: 8081
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+momentum:
+  jwt:
+    secret: ${JWT_SECRET:change-me-to-a-256-bit-secret-key-please-use-openssl}
+    access-minutes: ${JWT_ACCESS_MINUTES:15}
+    refresh-days: ${JWT_REFRESH_DAYS:7}
+  bootstrap:
+    email: ${BOOTSTRAP_USER_EMAIL:you@momentum.local}
+    password: ${BOOTSTRAP_USER_PASSWORD:ChangeMeNow!}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  tracing:
+    sampling:
+      probability: 1.0

@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: api-gateway
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URI:http://localhost:8888}
+server:
+  port: 8080
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+momentum:
+  jwt:
+    secret: ${JWT_SECRET:change-me-to-a-256-bit-secret-key-please-use-openssl}
+spring.cloud.gateway.server.webflux:
+  globalcors:
+    cors-configurations:
+      '[/**]':
+        allowedOrigins: ${CORS_ORIGINS:http://localhost:4200}
+        allowedMethods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+        allowedHeaders: "*"
+        allowCredentials: true
+  routes:
+    - id: auth-service
+      uri: lb://auth-service
+      predicates:
+        - Path=/api/auth/**
+    - id: planning-service
+      uri: lb://planning-service
+      predicates:
+        - Path=/api/planning/**
+    - id: journal-service
+      uri: lb://journal-service
+      predicates:
+        - Path=/api/journal/**
+    - id: streak-service
+      uri: lb://streak-service
+      predicates:
+        - Path=/api/streak/**
+    - id: goal-service
+      uri: lb://goal-service
+      predicates:
+        - Path=/api/goals/**
+    - id: stats-service
+      uri: lb://stats-service
+      predicates:
+        - Path=/api/stats/**
+    - id: notification-service
+      uri: lb://notification-service
+      predicates:
+        - Path=/api/notifications/**
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,gateway
+  tracing:
+    sampling:
+      probability: 1.0

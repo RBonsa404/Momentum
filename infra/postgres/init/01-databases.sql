@@ -1,0 +1,7 @@
+CREATE DATABASE auth_db;
+CREATE DATABASE planning_db;
+CREATE DATABASE journal_db;
+CREATE DATABASE streak_db;
+CREATE DATABASE goal_db;
+CREATE DATABASE stats_db;
+CREATE DATABASE notification_db;

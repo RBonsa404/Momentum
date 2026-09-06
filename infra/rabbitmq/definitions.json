@@ -1,0 +1,56 @@
+{
+  "rabbit_version": "3.13.0",
+  "rabbitmq_version": "3.13.0",
+  "users": [],
+  "vhosts": [{ "name": "/" }],
+  "permissions": [],
+  "parameters": [],
+  "policies": [
+    {
+      "vhost": "/",
+      "name": "dlq-ttl",
+      "pattern": "^momentum\\.",
+      "apply-to": "queues",
+      "definition": { "dead-letter-exchange": "momentum.events.dlx" }
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "momentum.events",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "momentum.events.dlx",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "momentum.events.dlq",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "momentum.events.dlx",
+      "vhost": "/",
+      "destination": "momentum.events.dlq",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    }
+  ]
+}

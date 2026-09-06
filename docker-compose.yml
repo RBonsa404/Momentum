@@ -1,0 +1,206 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-momentum}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-momentum}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-momentum}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-momentum}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-momentum}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+      - ./infra/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+      - ./infra/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  eureka-server:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: eureka-server/target/eureka-server-0.1.0-SNAPSHOT.jar
+    ports:
+      - "8761:8761"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  config-server:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: config-server/target/config-server-0.1.0-SNAPSHOT.jar
+    environment:
+      EUREKA_URI: http://eureka-server:8761/eureka
+      CONFIG_REPO: /config-repo
+    volumes:
+      - ./infra/config-repo:/config-repo:ro
+    ports:
+      - "8888:8888"
+    depends_on:
+      - eureka-server
+
+  api-gateway:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: api-gateway/target/api-gateway-0.1.0-SNAPSHOT.jar
+    environment:
+      EUREKA_URI: http://eureka-server:8761/eureka
+      CONFIG_SERVER_URI: http://config-server:8888
+      JWT_SECRET: ${JWT_SECRET:-change-me-to-a-256-bit-secret-key-please-use-openssl}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:4200}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+      - config-server
+
+  auth-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: auth-service/target/auth-service-0.1.0-SNAPSHOT.jar
+    environment:
+      EUREKA_URI: http://eureka-server:8761/eureka
+      CONFIG_SERVER_URI: http://config-server:8888
+      AUTH_DB_URL: jdbc:postgresql://postgres:5432/auth_db
+      POSTGRES_USER: ${POSTGRES_USER:-momentum}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-momentum}
+      JWT_SECRET: ${JWT_SECRET:-change-me-to-a-256-bit-secret-key-please-use-openssl}
+      BOOTSTRAP_USER_EMAIL: ${BOOTSTRAP_USER_EMAIL:-you@momentum.local}
+      BOOTSTRAP_USER_PASSWORD: ${BOOTSTRAP_USER_PASSWORD:-ChangeMeNow!}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+
+  planning-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: planning-service/target/planning-service-0.1.0-SNAPSHOT.jar
+    environment: &svc
+      EUREKA_URI: http://eureka-server:8761/eureka
+      CONFIG_SERVER_URI: http://config-server:8888
+      POSTGRES_USER: ${POSTGRES_USER:-momentum}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-momentum}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: ${RABBITMQ_USER:-momentum}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-momentum}
+      PLANNING_DB_URL: jdbc:postgresql://postgres:5432/planning_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  journal-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: journal-service/target/journal-service-0.1.0-SNAPSHOT.jar
+    environment:
+      <<: *svc
+      JOURNAL_DB_URL: jdbc:postgresql://postgres:5432/journal_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  streak-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: streak-service/target/streak-service-0.1.0-SNAPSHOT.jar
+    environment:
+      <<: *svc
+      STREAK_DB_URL: jdbc:postgresql://postgres:5432/streak_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  goal-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: goal-service/target/goal-service-0.1.0-SNAPSHOT.jar
+    environment:
+      <<: *svc
+      GOAL_DB_URL: jdbc:postgresql://postgres:5432/goal_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  stats-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: stats-service/target/stats-service-0.1.0-SNAPSHOT.jar
+    environment:
+      <<: *svc
+      STATS_DB_URL: jdbc:postgresql://postgres:5432/stats_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  notification-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: notification-service/target/notification-service-0.1.0-SNAPSHOT.jar
+    environment:
+      <<: *svc
+      NOTIFICATION_DB_URL: jdbc:postgresql://postgres:5432/notification_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - api-gateway
+
+volumes:
+  postgres-data:
+  rabbitmq-data:
