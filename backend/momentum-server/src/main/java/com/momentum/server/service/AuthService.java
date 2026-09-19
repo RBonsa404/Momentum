@@ -51,13 +51,22 @@ public class AuthService {
 
     @Transactional
     public TokenResponse register(com.momentum.server.dto.auth.RegisterRequest request) {
-        if (users.findByEmailIgnoreCase(request.getEmail()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already in use");
+        if (request == null || request.getEmail() == null || request.getEmail().isBlank() || request.getPassword() == null || request.getPassword().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email et mot de passe requis");
+        }
+        String email = request.getEmail().toLowerCase().trim();
+        String password = request.getPassword();
+        String displayName = (request.getDisplayName() != null && !request.getDisplayName().isBlank())
+                ? request.getDisplayName().trim()
+                : email.split("@")[0];
+
+        if (users.findByEmailIgnoreCase(email).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email déjà utilisé");
         }
         UserAccount user = new UserAccount();
-        user.setEmail(request.getEmail().toLowerCase().trim());
-        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        user.setDisplayName(request.getDisplayName().trim());
+        user.setEmail(email);
+        user.setPasswordHash(passwordEncoder.encode(password));
+        user.setDisplayName(displayName);
         user.setLocked(false);
         user.setFailedAttempts(0);
         UserAccount saved = users.save(user);
