@@ -1,8 +1,10 @@
 package com.momentum.stats.service;
 
-import tools.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.momentum.common.event.DomainEvent;
 import com.momentum.common.event.EventTypes;
+import com.momentum.common.event.payload.GoalProgressPayload;
 import com.momentum.common.event.payload.JournalLifecyclePayload;
 import com.momentum.common.event.payload.StreakUpdatedPayload;
 import com.momentum.common.event.payload.TaskLifecyclePayload;
@@ -19,7 +21,9 @@ import java.util.UUID;
 @Service
 public class StatsProjectionService {
     private final DailySnapshotRepository snapshots;
-    private final JsonMapper jsonMapper = JsonMapper.builder().build();
+    private final JsonMapper jsonMapper = JsonMapper.builder()
+            .addModule(new JavaTimeModule())
+            .build();
 
     public StatsProjectionService(DailySnapshotRepository snapshots) {
         this.snapshots = snapshots;
@@ -69,6 +73,13 @@ public class StatsProjectionService {
             LocalDate date = payload.getLastQualifiedDate() == null ? LocalDate.now() : payload.getLastQualifiedDate();
             DailySnapshot snap = snapshot(event.getUserId(), date);
             snap.setStreakLength(payload.getCurrentLength());
+            snapshots.save(snap);
+            return;
+        }
+        if (EventTypes.GOAL_PROGRESS.equals(event.getEventType())) {
+            GoalProgressPayload payload = jsonMapper.convertValue(event.getPayload(), GoalProgressPayload.class);
+            LocalDate date = LocalDate.now();
+            DailySnapshot snap = snapshot(event.getUserId(), date);
             snapshots.save(snap);
         }
     }

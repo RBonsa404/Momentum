@@ -45,4 +45,17 @@ class StreakEngineTest {
         assertThat(rule.getJokersRemaining()).isZero();
         assertThat(streak.getStatus()).isEqualTo("JOKER");
     }
+
+    @Test
+    void missedOnOffDayPreservesStreak() {
+        Streak streak = new Streak();
+        streak.setCurrentLength(4);
+        StreakRule rule = new StreakRule();
+        rule.setOffWeekdays("SATURDAY,SUNDAY");
+        rule.setJokersRemaining(2);
+        engine.onJournalMissed(streak, rule, LocalDate.of(2026, 9, 12)); // Saturday
+        assertThat(streak.getCurrentLength()).isEqualTo(4);
+        assertThat(rule.getJokersRemaining()).isEqualTo(2);
+        assertThat(streak.getStatus()).isEqualTo("OFF_DAY");
+    }
 }

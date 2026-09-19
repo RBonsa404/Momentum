@@ -41,6 +41,13 @@
       "durable": true,
       "auto_delete": false,
       "arguments": {}
+    },
+    {
+      "name": "momentum.streak.journal",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
     }
   ],
   "bindings": [
@@ -50,6 +57,14 @@
       "destination": "momentum.events.dlq",
       "destination_type": "queue",
       "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "momentum.events",
+      "vhost": "/",
+      "destination": "momentum.streak.journal",
+      "destination_type": "queue",
+      "routing_key": "momentum.journal.#",
       "arguments": {}
     }
   ]

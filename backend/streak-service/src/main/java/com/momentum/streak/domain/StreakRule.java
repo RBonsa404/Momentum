@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -20,6 +21,7 @@ public class StreakRule {
     private int jokersPerMonth = 2;
     @Column(nullable = false)
     private int jokersRemaining = 2;
+    private LocalDate lastJokerReset;
 
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
@@ -31,4 +33,6 @@ public class StreakRule {
     public void setJokersPerMonth(int jokersPerMonth) { this.jokersPerMonth = jokersPerMonth; }
     public int getJokersRemaining() { return jokersRemaining; }
     public void setJokersRemaining(int jokersRemaining) { this.jokersRemaining = jokersRemaining; }
+    public LocalDate getLastJokerReset() { return lastJokerReset; }
+    public void setLastJokerReset(LocalDate lastJokerReset) { this.lastJokerReset = lastJokerReset; }
 }

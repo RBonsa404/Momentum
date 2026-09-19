@@ -77,12 +77,13 @@ public class PlanningApplicationService {
         return blocks.save(block);
     }
 
-    public Task createTask(UUID userId, String correlationId, UUID dayId, UUID timeBlockId, String title, RecurrenceType recurrence) {
-        Day day = days.findById(dayId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public Task createTask(UUID userId, String correlationId, UUID dayId, UUID timeBlockId, String title, String notes, RecurrenceType recurrence) {
+        Day day = days.findById(dayId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Day not found"));
         Task task = new Task();
         task.setDayId(dayId);
         task.setTimeBlockId(timeBlockId);
         task.setTitle(title);
+        task.setNotes(notes);
         task.setRecurrence(recurrence == null ? RecurrenceType.NONE : recurrence);
         Task saved = tasks.save(task);
         publisher.taskCreated(userId, correlationId, saved, day);

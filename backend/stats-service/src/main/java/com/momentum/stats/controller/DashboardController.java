@@ -2,6 +2,9 @@ package com.momentum.stats.controller;
 
 import com.momentum.common.tracing.CorrelationIds;
 import com.momentum.stats.domain.DailySnapshot;
+import com.momentum.stats.dto.DashboardResponse;
+import com.momentum.stats.dto.DailySnapshotDto;
+import com.momentum.stats.mapper.StatsMapper;
 import com.momentum.stats.repository.DailySnapshotRepository;
 import com.momentum.stats.service.ProcrastinationScoreCalculator;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,23 +17,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/stats")
 public class DashboardController {
     private final DailySnapshotRepository snapshots;
+    private final StatsMapper mapper;
     private final ProcrastinationScoreCalculator calculator = new ProcrastinationScoreCalculator();
 
-    public DashboardController(DailySnapshotRepository snapshots) {
+    public DashboardController(DailySnapshotRepository snapshots, StatsMapper mapper) {
         this.snapshots = snapshots;
+        this.mapper = mapper;
     }
 
     @GetMapping("/dashboard")
-    public Map<String, Object> dashboard(
+    public DashboardResponse dashboard(
             HttpServletRequest request,
             @RequestParam(defaultValue = "week") String period,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
@@ -50,18 +53,42 @@ public class DashboardController {
         int missed = rows.stream().mapToInt(DailySnapshot::getMissedJournals).sum();
         int expectedJournals = (int) start.datesUntil(end.plusDays(1)).count();
         int score = calculator.score(unfinished, missed, postponed, calculator.expectedItems(planned, expectedJournals));
-        Map<String, Object> body = new HashMap<>();
-        body.put("from", start);
-        body.put("to", end);
-        body.put("planned", planned);
-        body.put("done", done);
-        body.put("unfinished", unfinished);
-        body.put("postponed", postponed);
-        body.put("missedJournals", missed);
-        body.put("procrastinationScore", score);
-        body.put("heatmap", rows);
-        body.put("completionRate", planned == 0 ? 0 : Math.round(100.0 * done / planned));
-        return body;
+        
+        DashboardResponse response = new DashboardResponse();
+        response.setFrom(start);
+        response.setTo(end);
+        response.setPlanned(planned);
+        response.setDone(done);
+        response.setUnfinished(unfinished);
+        response.setPostponed(postponed);
+        response.setMissedJournals(missed);
+        response.setProcrastinationScore(score);
+        response.setHeatmap(rows.stream().map(mapper::toDto).toList());
+        response.setCompletionRate(planned == 0 ? 0 : (int) Math.round(100.0 * done / planned));
+        return response;
+    }
+
+    @GetMapping("/streak")
+    public List<DailySnapshotDto> streak(
+            HttpServletRequest request,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        UUID userId = userId(request);
+        LocalDate end = to == null ? LocalDate.now() : to;
+        LocalDate start = from != null ? from : end.minusDays(29);
+        return snapshots.findByUserIdAndDayDateBetweenOrderByDayDateAsc(userId, start, end)
+                .stream()
+                .map(mapper::toDto)
+                .toList();
+    }
+
+    @GetMapping("/procrastination")
+    public DashboardResponse procrastination(
+            HttpServletRequest request,
+            @RequestParam(defaultValue = "week") String period,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        return dashboard(request, period, from, to);
     }
 
     private UUID userId(HttpServletRequest request) {

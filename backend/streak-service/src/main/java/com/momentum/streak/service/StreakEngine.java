@@ -25,6 +25,8 @@ public class StreakEngine {
 
     public void onJournalMissed(Streak streak, StreakRule rule, LocalDate date) {
         if (isOffDay(rule, date)) {
+            streak.setLastQualifiedDate(date);
+            streak.setStatus("OFF_DAY");
             return;
         }
         if (rule.getJokersRemaining() > 0) {

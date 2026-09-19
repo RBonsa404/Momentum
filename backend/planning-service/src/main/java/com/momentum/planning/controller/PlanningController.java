@@ -1,12 +1,11 @@
 package com.momentum.planning.controller;
 
-import com.momentum.planning.domain.Day;
 import com.momentum.planning.domain.RecurrenceType;
-import com.momentum.planning.domain.SubTask;
-import com.momentum.planning.domain.Task;
-import com.momentum.planning.domain.TimeBlock;
+import com.momentum.planning.dto.*;
+import com.momentum.planning.mapper.PlanningMapper;
 import com.momentum.planning.service.PlanningApplicationService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -27,9 +25,11 @@ import java.util.UUID;
 @RequestMapping("/api/planning")
 public class PlanningController {
     private final PlanningApplicationService planning;
+    private final PlanningMapper mapper;
 
-    public PlanningController(PlanningApplicationService planning) {
+    public PlanningController(PlanningApplicationService planning, PlanningMapper mapper) {
         this.planning = planning;
+        this.mapper = mapper;
     }
 
     @GetMapping("/days")
@@ -37,59 +37,63 @@ public class PlanningController {
             HttpServletRequest request,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         UUID userId = PlanningApplicationService.userId(request);
-        Day day = planning.getOrCreateDay(userId, date);
-        List<TimeBlock> blocks = planning.blocks(day.getId());
-        List<Task> tasks = planning.tasks(day.getId());
-        return Map.of("day", day, "blocks", blocks, "tasks", tasks);
+        var day = planning.getOrCreateDay(userId, date);
+        var blocks = planning.blocks(day.getId()).stream().map(mapper::toDto).toList();
+        var tasks = planning.tasks(day.getId()).stream().map(mapper::toDto).toList();
+        return Map.of("day", mapper.toDto(day), "blocks", blocks, "tasks", tasks);
     }
 
     @PostMapping("/days/{dayId}/blocks")
-    public TimeBlock createBlock(@PathVariable UUID dayId, @RequestBody Map<String, String> body) {
-        return planning.createBlock(dayId, body.get("title"), LocalTime.parse(body.get("startTime")), LocalTime.parse(body.get("endTime")));
+    public TimeBlockDto createBlock(@PathVariable UUID dayId, @Valid @RequestBody CreateTimeBlockRequest request) {
+        var block = planning.createBlock(dayId, request.getTitle(), request.getStartTime(), request.getEndTime());
+        return mapper.toDto(block);
     }
 
     @PostMapping("/days/{dayId}/tasks")
-    public Task createTask(HttpServletRequest request, @PathVariable UUID dayId, @RequestBody Map<String, String> body) {
-        UUID blockId = body.get("timeBlockId") == null ? null : UUID.fromString(body.get("timeBlockId"));
-        RecurrenceType recurrence = body.get("recurrence") == null ? RecurrenceType.NONE : RecurrenceType.valueOf(body.get("recurrence"));
-        return planning.createTask(
+    public TaskDto createTask(HttpServletRequest request, @PathVariable UUID dayId, @Valid @RequestBody CreateTaskRequest body) {
+        var task = planning.createTask(
                 PlanningApplicationService.userId(request),
                 PlanningApplicationService.cid(request),
                 dayId,
-                blockId,
-                body.get("title"),
-                recurrence);
+                body.getTimeBlockId(),
+                body.getTitle(),
+                body.getNotes(),
+                body.getRecurrence() == null ? RecurrenceType.NONE : body.getRecurrence());
+        return mapper.toDto(task);
     }
 
     @PostMapping("/tasks/{taskId}/complete")
-    public Task complete(HttpServletRequest request, @PathVariable UUID taskId) {
-        return planning.completeTask(
+    public TaskDto complete(HttpServletRequest request, @PathVariable UUID taskId) {
+        var task = planning.completeTask(
                 PlanningApplicationService.userId(request),
                 PlanningApplicationService.cid(request),
                 taskId);
+        return mapper.toDto(task);
     }
 
     @PostMapping("/days/{dayId}/close")
-    public Day close(HttpServletRequest request, @PathVariable UUID dayId) {
-        return planning.closeDay(
+    public DayDto close(HttpServletRequest request, @PathVariable UUID dayId) {
+        var day = planning.closeDay(
                 PlanningApplicationService.userId(request),
                 PlanningApplicationService.cid(request),
                 dayId);
+        return mapper.toDto(day);
     }
 
     @GetMapping("/tasks/{taskId}/subtasks")
-    public List<SubTask> subTasks(@PathVariable UUID taskId) {
-        return planning.subTasks(taskId);
+    public List<SubTaskDto> subTasks(@PathVariable UUID taskId) {
+        return planning.subTasks(taskId).stream().map(mapper::toDto).toList();
     }
 
     @PostMapping("/tasks/{taskId}/subtasks")
-    public SubTask addSub(@PathVariable UUID taskId, @RequestBody Map<String, Object> body) {
-        int order = body.get("sortOrder") == null ? 0 : ((Number) body.get("sortOrder")).intValue();
-        return planning.addSubTask(taskId, String.valueOf(body.get("title")), order);
+    public SubTaskDto addSub(@PathVariable UUID taskId, @Valid @RequestBody CreateSubTaskRequest body) {
+        var sub = planning.addSubTask(taskId, body.getTitle(), body.getSortOrder() == null ? 0 : body.getSortOrder());
+        return mapper.toDto(sub);
     }
 
     @PatchMapping("/subtasks/{id}")
-    public SubTask toggle(@PathVariable UUID id, @RequestBody Map<String, Boolean> body) {
-        return planning.toggleSubTask(id, Boolean.TRUE.equals(body.get("done")));
+    public SubTaskDto toggle(@PathVariable UUID id, @RequestBody Map<String, Boolean> body) {
+        var sub = planning.toggleSubTask(id, Boolean.TRUE.equals(body.get("done")));
+        return mapper.toDto(sub);
     }
 }

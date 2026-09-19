@@ -61,7 +61,7 @@ import { burst } from '../../shared/animations/gsap';
               <input class="flex-1 rounded-full bg-white/5 px-3 py-1 text-xs" [ngModelOptions]="{standalone: true}" [(ngModel)]="subDraft[task.id]" placeholder="Sous-tâche" />
               <button class="text-xs text-ember" type="submit">+</button>
             </form>
-            @for (sub of (subs()[task.id] ?? []); track sub.id) {
+            @for (sub of subs()[task.id]; track sub.id) {
               <label class="mt-1 flex items-center gap-2 text-xs text-mute">
                 <input type="checkbox" [checked]="sub.done" (change)="toggleSub(sub)" />
                 {{ sub.title }}

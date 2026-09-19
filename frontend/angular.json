@@ -17,7 +17,8 @@
             "tsConfig": "tsconfig.app.json",
             "assets": ["src/assets"],
             "styles": ["src/styles.css"],
-            "outputPath": "dist/momentum-web"
+            "outputPath": "dist/momentum-web",
+            "index": "src/index.html"
           },
           "configurations": {
             "production": {

@@ -6,6 +6,7 @@ import com.momentum.common.event.payload.JournalLifecyclePayload;
 import com.momentum.common.tracing.CorrelationIds;
 import com.momentum.journal.domain.JournalEntry;
 import com.momentum.journal.domain.TrackedUser;
+import com.momentum.journal.dto.SubmitJournalRequest;
 import com.momentum.journal.repository.JournalEntryRepository;
 import com.momentum.journal.repository.TrackedUserRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -16,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -39,17 +39,17 @@ public class JournalService {
         }
     }
 
-    public JournalEntry submit(UUID userId, String correlationId, Map<String, Object> body) {
-        LocalDate date = LocalDate.parse(String.valueOf(body.getOrDefault("dayDate", LocalDate.now())));
+    public JournalEntry submit(UUID userId, String correlationId, SubmitJournalRequest request) {
+        LocalDate date = request.getDayDate() == null ? LocalDate.now() : request.getDayDate();
         JournalEntry entry = entries.findByUserIdAndDayDate(userId, date).orElseGet(JournalEntry::new);
         entry.setUserId(userId);
         entry.setDayDate(date);
-        entry.setWins(String.valueOf(body.getOrDefault("wins", "")));
-        entry.setStruggles(body.get("struggles") == null ? null : String.valueOf(body.get("struggles")));
-        entry.setGratitude(body.get("gratitude") == null ? null : String.valueOf(body.get("gratitude")));
-        entry.setMood(((Number) body.getOrDefault("mood", 5)).intValue());
-        entry.setEnergy(((Number) body.getOrDefault("energy", 5)).intValue());
-        entry.setTags(body.get("tags") == null ? null : String.valueOf(body.get("tags")));
+        entry.setWins(request.getWins() == null ? "" : request.getWins());
+        entry.setStruggles(request.getStruggles());
+        entry.setGratitude(request.getGratitude());
+        entry.setMood(request.getMood());
+        entry.setEnergy(request.getEnergy());
+        entry.setTags(request.getTags());
         track(userId);
         JournalEntry saved = entries.save(entry);
         publish(EventTypes.JOURNAL_SUBMITTED, userId, correlationId, saved, false);
