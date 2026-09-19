@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: momentum-server
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/momentum}
+    username: ${POSTGRES_USER:momentum}
+    password: ${POSTGRES_PASSWORD:momentum}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate.jdbc.time_zone: UTC
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    baseline-on-migrate: false
+
+server:
+  port: ${PORT:8080}
+
+momentum:
+  jwt:
+    secret: ${JWT_SECRET:change-me-to-a-256-bit-secret-key-please-use-openssl}
+    access-minutes: ${JWT_ACCESS_MINUTES:15}
+    refresh-days: ${JWT_REFRESH_DAYS:7}
+  bootstrap:
+    email: ${BOOTSTRAP_USER_EMAIL:you@momentum.local}
+    password: ${BOOTSTRAP_USER_PASSWORD:ChangeMeNow!}
+  cors:
+    origins: ${CORS_ORIGINS:http://localhost:4200}
+  journal:
+    missed-cron: ${JOURNAL_MISSED_CRON:0 59 23 * * *}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized

@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: momentum-postgres
+    environment:
+      POSTGRES_DB: momentum
+      POSTGRES_USER: momentum
+      POSTGRES_PASSWORD: momentum_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U momentum -d momentum"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  momentum-server:
+    build: .
+    container_name: momentum-server
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:postgresql://postgres:5432/momentum
+      POSTGRES_USER: momentum
+      POSTGRES_PASSWORD: momentum_password
+      JWT_SECRET: momentum-secret-key-production-change-me-at-least-256-bits!!
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
