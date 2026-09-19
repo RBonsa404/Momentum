@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d
+
+  api-gateway:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: api-gateway/target/api-gateway-0.1.0-SNAPSHOT.jar
+    environment:
+      EUREKA_URI: ${EUREKA_URI}
+      CONFIG_SERVER_URI: ${CONFIG_SERVER_URI}
+      JWT_SECRET: ${JWT_SECRET}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      AUTH_DB_URL: jdbc:postgresql://postgres:5432/auth_db
+      PLANNING_DB_URL: jdbc:postgresql://postgres:5432/planning_db
+      JOURNAL_DB_URL: jdbc:postgresql://postgres:5432/journal_db
+      STREAK_DB_URL: jdbc:postgresql://postgres:5432/streak_db
+      GOAL_DB_URL: jdbc:postgresql://postgres:5432/goal_db
+      STATS_DB_URL: jdbc:postgresql://postgres:5432/stats_db
+      NOTIFICATION_DB_URL: jdbc:postgresql://postgres:5432/notification_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      NODE_ENV: production
+    depends_on:
+      - api-gateway
+
+volumes:
+  postgres-data:

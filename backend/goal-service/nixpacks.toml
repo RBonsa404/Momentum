@@ -1,0 +1,7 @@
+[phases.setup]
+nixPkgs = ["openjdk17"]
+
+[phases.build]
+cmds = ["mvn", "clean", "package", "-DskipTests"]
+[start]
+cmd = "java -jar target/goal-service-0.1.0-SNAPSHOT.jar"

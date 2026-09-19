@@ -1,0 +1,7 @@
+[phases.setup]
+nixPkgs = ["openjdk17"]
+
+[phases.build]
+cmds = ["mvn", "clean", "package", "-DskipTests", "-pl", "api-gateway,auth-service,planning-service,journal-service,streak-service,goal-service,stats-service", "-am"]
+[start]
+cmd = "java -jar api-gateway/target/api-gateway-0.1.0-SNAPSHOT.jar"
