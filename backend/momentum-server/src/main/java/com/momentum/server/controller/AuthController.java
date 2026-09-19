@@ -23,6 +23,11 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @PostMapping("/register")
+    public TokenResponse register(@Valid @RequestBody com.momentum.server.dto.auth.RegisterRequest request) {
+        return authService.register(request);
+    }
+
     @PostMapping("/login")
     public TokenResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);

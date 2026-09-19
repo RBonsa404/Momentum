@@ -49,6 +49,21 @@ public class AuthService {
         this.refreshDays = refreshDays;
     }
 
+    @Transactional
+    public TokenResponse register(com.momentum.server.dto.auth.RegisterRequest request) {
+        if (users.findByEmailIgnoreCase(request.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already in use");
+        }
+        UserAccount user = new UserAccount();
+        user.setEmail(request.getEmail().toLowerCase().trim());
+        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        user.setDisplayName(request.getDisplayName().trim());
+        user.setLocked(false);
+        user.setFailedAttempts(0);
+        UserAccount saved = users.save(user);
+        return issuePair(saved);
+    }
+
     @Transactional(noRollbackFor = ResponseStatusException.class)
     public TokenResponse login(LoginRequest request) {
         UserAccount user = users.findByEmailIgnoreCase(request.getEmail())

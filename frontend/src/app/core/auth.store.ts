@@ -20,6 +20,10 @@ export class AuthStore {
     private readonly router: Router
   ) {}
 
+  register(email: string, password: string, displayName: string) {
+    return this.http.post<TokenResponse>('/api/auth/register', { email, password, displayName }).pipe(tap((t) => this.persist(t)));
+  }
+
   login(email: string, password: string) {
     return this.http.post<TokenResponse>('/api/auth/login', { email, password }).pipe(tap((t) => this.persist(t)));
   }
