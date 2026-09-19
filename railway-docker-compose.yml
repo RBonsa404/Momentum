@@ -8,16 +8,6 @@ services:
       - postgres-data:/var/lib/postgresql/data
       - ./infra/postgres/init:/docker-entrypoint-initdb.d
 
-  rabbitmq:
-    image: rabbitmq:3.13-management-alpine
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
-    volumes:
-      - rabbitmq-data:/var/lib/rabbitmq
-      - ./infra/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
-      - ./infra/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
-
   api-gateway:
     build:
       context: ./backend
@@ -29,85 +19,17 @@ services:
       CONFIG_SERVER_URI: http://config-server:8888
       JWT_SECRET: ${JWT_SECRET}
       CORS_ORIGINS: ${CORS_ORIGINS}
-    depends_on:
-      - eureka-server
-      - config-server
-
-  auth-service:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-      args:
-        JAR_FILE: auth-service/target/auth-service-0.1.0-SNAPSHOT.jar
-    environment:
-      EUREKA_URI: http://eureka-server:8761/eureka
-      CONFIG_SERVER_URI: http://config-server:8888
       AUTH_DB_URL: jdbc:postgresql://postgres:5432/auth_db
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      JWT_SECRET: ${JWT_SECRET}
-      BOOTSTRAP_USER_EMAIL: ${BOOTSTRAP_USER_EMAIL}
-      BOOTSTRAP_USER_PASSWORD: ${BOOTSTRAP_USER_PASSWORD}
-    depends_on:
-      - postgres
-      - eureka-server
-
-  planning-service:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-      args:
-        JAR_FILE: planning-service/target/planning-service-0.1.0-SNAPSHOT.jar
-    environment:
-      EUREKA_URI: http://eureka-server:8761/eureka
-      CONFIG_SERVER_URI: http://config-server:8888
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_USER: ${RABBITMQ_USER}
-      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       PLANNING_DB_URL: jdbc:postgresql://postgres:5432/planning_db
-    depends_on:
-      - postgres
-      - rabbitmq
-
-  journal-service:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-      args:
-        JAR_FILE: journal-service/target/journal-service-0.1.0-SNAPSHOT.jar
-    environment:
-      EUREKA_URI: http://eureka-server:8761/eureka
-      CONFIG_SERVER_URI: http://config-server:8888
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_USER: ${RABBITMQ_USER}
-      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       JOURNAL_DB_URL: jdbc:postgresql://postgres:5432/journal_db
-    depends_on:
-      - postgres
-      - rabbitmq
-
-  stats-service:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-      args:
-        JAR_FILE: stats-service/target/stats-service-0.1.0-SNAPSHOT.jar
-    environment:
-      EUREKA_URI: http://eureka-server:8761/eureka
-      CONFIG_SERVER_URI: http://config-server:8888
+      STREAK_DB_URL: jdbc:postgresql://postgres:5432/streak_db
+      GOAL_DB_URL: jdbc:postgresql://postgres:5432/goal_db
+      STATS_DB_URL: jdbc:postgresql://postgres:5432/stats_db
+      NOTIFICATION_DB_URL: jdbc:postgresql://postgres:5432/notification_db
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_USER: ${RABBITMQ_USER}
-      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
-      STATS_DB_URL: jdbc:postgresql://postgres:5432/stats_db
     depends_on:
       - postgres
-      - rabbitmq
 
   frontend:
     build:
@@ -119,4 +41,3 @@ services:
 
 volumes:
   postgres-data:
-  rabbitmq-data:
