@@ -106,15 +106,25 @@ export class LoginPage {
         error: (err) => {
           if (err.status === 409) {
             this.error.set('Cet email est déjà utilisé.');
+          } else if (err.status === 400) {
+            this.error.set('Email valide et mot de passe de 6 caractères minimum requis.');
+          } else if (err.status === 0) {
+            this.error.set('Le serveur backend est éteint. Lancez "docker compose up" dans backend/momentum-server.');
           } else {
-            this.error.set('Erreur lors de la création du compte. Vérifiez les informations.');
+            this.error.set('Erreur lors de la création du compte (Code ' + (err.status || 'inconnu') + ').');
           }
         }
       });
     } else {
       this.auth.login(this.email, this.password).subscribe({
         next: () => void this.router.navigateByUrl('/'),
-        error: () => this.error.set('Identifiants invalides ou compte verrouillé.')
+        error: (err) => {
+          if (err.status === 0) {
+            this.error.set('Le serveur backend est éteint. Lancez "docker compose up" dans backend/momentum-server.');
+          } else {
+            this.error.set('Identifiants invalides ou compte verrouillé.');
+          }
+        }
       });
     }
   }
