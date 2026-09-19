@@ -152,6 +152,12 @@ docker-compose up postgres rabbitmq
 
 Attendez que les services soient healthy (environ 30 secondes).
 
+**Important : Si RabbitMQ refuse la connexion**
+```bash
+docker exec momentum-rabbitmq-1 rabbitmqctl add_user momentum momentum
+docker exec momentum-rabbitmq-1 rabbitmqctl set_permissions -p / momentum ".*" ".*" ".*"
+```
+
 ### Étape 2.4 : Construire le backend
 
 ```bash

@@ -2,11 +2,13 @@ package com.momentum.planning.service;
 
 import com.momentum.planning.domain.Task;
 import com.momentum.planning.domain.TaskStatus;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class CarryOverService {
 
     public List<Task> postponeUnfinished(List<Task> sourceTasks, UUID targetDayId) {
