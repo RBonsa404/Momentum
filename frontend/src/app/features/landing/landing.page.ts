@@ -9,711 +9,618 @@ import { HaloBackgroundComponent } from '../../shared/ui/halo-background';
   template: `
     <ui-halo-background />
 
-    <!-- ══════════════════════════════════════════
-         MOBILE — COMING SOON
-    ══════════════════════════════════════════ -->
-    <div class="mobile-soon">
-      <div class="mobile-soon-inner">
-        <div class="mobile-soon-logo">
-          <img src="assets/favicon.png" alt="Momentum" class="mobile-soon-fav" />
-          <span class="mobile-soon-brand">MOMENTUM</span>
-        </div>
-
-        <span class="mobile-soon-badge">
-          <i class="mobile-soon-dot"></i>
-          Version mobile en cours
-        </span>
-
-        <h1 class="mobile-soon-title">
-          Bientôt sur<br />
-          <span class="mobile-soon-accent">votre mobile.</span>
-        </h1>
-
-        <p class="mobile-soon-desc">
-          L'interface mobile est en développement actif.
-          Pour l'instant, ouvrez Momentum depuis un ordinateur.
-        </p>
-
-        <div class="mobile-soon-line"><span>En attendant</span></div>
-
-        <a routerLink="/login" class="mobile-soon-cta">
-          Accéder depuis Desktop →
-        </a>
-
-        <p class="mobile-soon-copy">© 2026 Momentum</p>
+    <!-- Navbar -->
+    <header class="lp-nav">
+      <div class="lp-nav-left">
+        <img src="assets/favicon.png" alt="Momentum" class="lp-nav-fav" />
+        <span class="lp-nav-brand">MOMENTUM</span>
       </div>
-    </div>
+      <nav class="lp-nav-links">
+        <a (click)="scrollTo('features')" class="lp-nav-link">Fonctionnalités</a>
+        <a (click)="scrollTo('method')" class="lp-nav-link">La Méthode</a>
+        <a (click)="scrollTo('faq')" class="lp-nav-link">FAQ</a>
+      </nav>
+      <div class="lp-nav-actions">
+        <a routerLink="/login" class="btn-ghost">Connexion</a>
+        <a routerLink="/login" [queryParams]="{ mode: 'register' }" class="btn-primary">
+          Créer un compte
+        </a>
+      </div>
+    </header>
 
-    <!-- ══════════════════════════════════════════
-         DESKTOP — LANDING PAGE
-    ══════════════════════════════════════════ -->
-    <div class="desktop-wrap">
+    <!-- Hero -->
+    <section class="lp-hero">
+      <div class="lp-hero-badge">
+        <span class="lp-badge-dot"></span>
+        Plateforme de gestion du temps &amp; de discipline
+      </div>
 
-      <!-- Navbar -->
-      <header class="nav">
-        <div class="nav-left">
-          <img src="assets/favicon.png" alt="Momentum" class="nav-fav" />
-          <span class="nav-brand">MOMENTUM</span>
+      <h1 class="lp-hero-title">
+        Organisez votre journée.<br />
+        <span class="lp-hero-accent">Exécutez sans distraction.</span>
+      </h1>
+
+      <p class="lp-hero-sub">
+        Momentum est un espace de travail personnel conçu pour lier l'agenda par blocs de temps,
+        le suivi de séries (streaks), le journal du soir et l'analyse de votre régularité.
+      </p>
+
+      <div class="lp-hero-actions">
+        <a routerLink="/login" [queryParams]="{ mode: 'register' }" class="btn-primary btn-lg">
+          Accéder à l'application →
+        </a>
+        <a (click)="scrollTo('features')" class="btn-ghost btn-lg lp-link-btn">
+          En savoir plus
+        </a>
+      </div>
+
+      <!-- App Preview Card — masqué sur très petit écran -->
+      <div class="lp-preview">
+        <div class="lp-preview-bar">
+          <div class="lp-preview-dots">
+            <span class="dot-r"></span>
+            <span class="dot-y"></span>
+            <span class="dot-g"></span>
+            <span class="lp-preview-url">app.momentum.internal</span>
+          </div>
+          <span class="lp-preview-tag">Vue d'ensemble</span>
         </div>
-        <nav class="nav-links">
-          <a (click)="scrollTo('features')" style="cursor:pointer">Fonctionnalités</a>
-          <a (click)="scrollTo('method')" style="cursor:pointer">La Méthode</a>
-          <a (click)="scrollTo('faq')" style="cursor:pointer">FAQ</a>
-        </nav>
-        <div class="nav-actions">
-          <a routerLink="/login" class="btn-ghost">Connexion</a>
-          <a routerLink="/login" [queryParams]="{ mode: 'register' }" class="btn-primary">Créer un compte</a>
-        </div>
-      </header>
 
-      <!-- Hero -->
-      <section class="hero">
-        <div class="hero-badge">
-          <span class="hero-dot"></span>
-          Plateforme de gestion du temps &amp; de discipline
+        <div class="lp-stats">
+          <div class="lp-stat">
+            <p class="lp-stat-label">Taux d'accomplissement</p>
+            <p class="lp-stat-val lp-stat-white">88 %</p>
+          </div>
+          <div class="lp-stat">
+            <p class="lp-stat-label">Série en cours</p>
+            <p class="lp-stat-val lp-stat-ember">14 jours</p>
+          </div>
+          <div class="lp-stat">
+            <p class="lp-stat-label">Procrastination</p>
+            <p class="lp-stat-val lp-stat-green">12 %</p>
+          </div>
         </div>
 
-        <h1 class="hero-title">
-          Organisez votre journée.<br />
-          <span class="hero-accent">Exécutez sans distraction.</span>
-        </h1>
+        <div class="lp-plan">
+          <p class="lp-plan-head">Planning du jour</p>
+          <div class="lp-plan-row lp-plan-done">
+            <span>09:00 – 11:30 · Session Deep Work</span>
+            <span class="lp-plan-badge badge-done">Validé</span>
+          </div>
+          <div class="lp-plan-row lp-plan-prog">
+            <span>14:00 – 16:00 · Révision des objectifs</span>
+            <span class="lp-plan-badge badge-prog">En cours</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <p class="hero-sub">
-          Momentum est un espace de travail personnel conçu pour lier l'agenda par blocs de temps,
-          le suivi de séries (streaks), le journal du soir et l'analyse de votre régularité.
+    <!-- Features -->
+    <section id="features" class="lp-section">
+      <div class="lp-section-head">
+        <h2>Une suite d'outils conçue pour la clarté.</h2>
+        <p>Chaque module répond à un besoin spécifique de votre workflow quotidien.</p>
+      </div>
+
+      <div class="lp-features-grid">
+        @for (feat of features; track feat.num) {
+          <div class="lp-feat-card" [class.lp-feat-soon]="feat.soon">
+            <span class="lp-feat-num">{{ feat.num }}</span>
+            <div class="lp-feat-head">
+              <h3>{{ feat.title }}</h3>
+              @if (feat.soon) {
+                <span class="lp-feat-badge">Bientôt</span>
+              }
+            </div>
+            <p>{{ feat.desc }}</p>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Method -->
+    <section id="method" class="lp-section">
+      <div class="lp-method-card">
+        <span class="lp-method-label">PRINCIPE FONDATEUR</span>
+        <h2>La simplicité au service de la constance.</h2>
+        <p>
+          Momentum élimine les fonctionnalités superflues pour se concentrer sur l'essentiel :
+          savoir précisément quoi faire à chaque moment de la journée, sans surcharge mentale.
         </p>
+        <a routerLink="/login" [queryParams]="{ mode: 'register' }" class="btn-primary">
+          Créer un compte gratuitement
+        </a>
+      </div>
+    </section>
 
-        <div class="hero-actions">
-          <a routerLink="/login" [queryParams]="{ mode: 'register' }" class="btn-primary btn-lg">
-            Accéder à l'application →
-          </a>
-          <a (click)="scrollTo('features')" class="btn-ghost btn-lg" style="cursor:pointer">En savoir plus</a>
-        </div>
-
-        <!-- App Preview -->
-        <div class="preview-card">
-          <div class="preview-bar">
-            <div class="preview-dots">
-              <span class="dot-r"></span>
-              <span class="dot-y"></span>
-              <span class="dot-g"></span>
-              <span class="preview-url">app.momentum.internal</span>
-            </div>
-            <span class="preview-tag">Vue d'ensemble</span>
+    <!-- FAQ -->
+    <section id="faq" class="lp-section">
+      <h2 class="lp-faq-title">Questions fréquentes</h2>
+      <div class="lp-faq-list">
+        @for (item of faqs; track item.q) {
+          <div class="lp-faq-item">
+            <h3>{{ item.q }}</h3>
+            <p>{{ item.a }}</p>
           </div>
+        }
+      </div>
+    </section>
 
-          <div class="preview-stats">
-            <div class="stat-cell">
-              <p class="stat-label">Taux d'accomplissement</p>
-              <p class="stat-val stat-white">88 %</p>
-            </div>
-            <div class="stat-cell">
-              <p class="stat-label">Série en cours</p>
-              <p class="stat-val stat-ember">14 jours</p>
-            </div>
-            <div class="stat-cell">
-              <p class="stat-label">Score de procrastination</p>
-              <p class="stat-val stat-green">12 %</p>
-            </div>
-          </div>
-
-          <div class="preview-plan">
-            <p class="plan-head">Planning du jour</p>
-            <div class="plan-row plan-done">
-              <span>09:00 – 11:30 · Session Deep Work — Développement Core</span>
-              <span class="plan-badge badge-done">Validé</span>
-            </div>
-            <div class="plan-row plan-inprog">
-              <span>14:00 – 16:00 · Rédaction &amp; Révision des objectifs</span>
-              <span class="plan-badge badge-inprog">En cours</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Features -->
-      <section id="features" class="features-section">
-        <div class="section-head">
-          <h2>Une suite d'outils conçue pour la clarté.</h2>
-          <p>Chaque module répond à un besoin spécifique de votre workflow quotidien.</p>
-        </div>
-
-        <div class="features-grid">
-          @for (feat of features; track feat.num) {
-            <div class="feat-card" [class.feat-soon]="feat.soon">
-              <span class="feat-index">{{ feat.num }}</span>
-              <div class="feat-head">
-                <h3>{{ feat.title }}</h3>
-                @if (feat.soon) {
-                  <span class="feat-badge">Bientôt</span>
-                }
-              </div>
-              <p>{{ feat.desc }}</p>
-            </div>
-          }
-        </div>
-      </section>
-
-      <!-- Method -->
-      <section id="method" class="method-section">
-        <div class="method-card">
-          <span class="method-label">PRINCIPE FONDATEUR</span>
-          <h2>La simplicité au service de la constance.</h2>
-          <p>
-            Momentum élimine les fonctionnalités superflues pour se concentrer sur l'essentiel :
-            savoir précisément quoi faire à chaque moment de la journée, sans surcharge mentale.
-          </p>
-          <a routerLink="/login" [queryParams]="{ mode: 'register' }" class="btn-primary">
-            Créer un compte gratuitement
-          </a>
-        </div>
-      </section>
-
-      <!-- FAQ -->
-      <section id="faq" class="faq-section">
-        <h2>Questions fréquentes</h2>
-        <div class="faq-list">
-          @for (item of faqs; track item.q) {
-            <div class="faq-item">
-              <h3>{{ item.q }}</h3>
-              <p>{{ item.a }}</p>
-            </div>
-          }
-        </div>
-      </section>
-
-      <!-- Footer -->
-      <footer class="site-footer">
-        <div class="footer-logo">
-          <img src="assets/favicon.png" alt="Momentum" />
-          <span>MOMENTUM</span>
-        </div>
-        <p>© 2026 Momentum. Tous droits réservés.</p>
-        <div class="footer-links">
-          <a routerLink="/login">Connexion</a>
-          <span>·</span>
-          <a routerLink="/login" [queryParams]="{ mode: 'register' }">Inscription</a>
-        </div>
-      </footer>
-
-    </div>
+    <!-- Footer -->
+    <footer class="lp-footer">
+      <div class="lp-footer-logo">
+        <img src="assets/favicon.png" alt="Momentum" />
+        <span>MOMENTUM</span>
+      </div>
+      <p>© 2026 Momentum. Tous droits réservés.</p>
+      <div class="lp-footer-links">
+        <a routerLink="/login">Connexion</a>
+        <span>·</span>
+        <a routerLink="/login" [queryParams]="{ mode: 'register' }">Inscription</a>
+      </div>
+    </footer>
   `,
   styles: [`
-    /* ──────────────────────────────────────────────
-       MOBILE COMING SOON  (visible < 768px)
-    ────────────────────────────────────────────── */
-    .mobile-soon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100dvh;
-      padding: 2rem 1.5rem;
-      text-align: center;
-    }
-    .mobile-soon-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.2rem;
-      max-width: 340px;
-      width: 100%;
-    }
-    .mobile-soon-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-    .mobile-soon-fav {
-      width: 28px; height: 28px;
-      border-radius: 6px;
-    }
-    .mobile-soon-brand {
-      font-family: monospace;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.25em;
-      color: #f5f5f5;
-    }
-    .mobile-soon-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.7rem;
-      color: #9ca3af;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.04);
-      border-radius: 9999px;
-      padding: 0.35rem 0.85rem;
-    }
-    .mobile-soon-dot {
-      display: inline-block;
-      width: 6px; height: 6px;
-      border-radius: 9999px;
-      background: #ff4500;
-      animation: pulse-dot 2s ease-in-out infinite;
-    }
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: 0.5; transform: scale(1.5); }
-    }
-    .mobile-soon-title {
-      font-size: 2.2rem;
-      font-weight: 900;
-      line-height: 1.1;
-      letter-spacing: -0.03em;
-      color: #f5f5f5;
-      margin: 0;
-    }
-    .mobile-soon-accent {
-      background: linear-gradient(135deg, #ff4500, #ff6b35, #fbbf24);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .mobile-soon-desc {
-      font-size: 0.8rem;
-      color: #9ca3af;
-      line-height: 1.7;
-      margin: 0;
-    }
-    .mobile-soon-line {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      width: 100%;
-      color: #4b5563;
-      font-size: 0.62rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-    .mobile-soon-line::before,
-    .mobile-soon-line::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(255,255,255,0.08);
-    }
-    .mobile-soon-cta {
-      display: block;
-      width: 100%;
-      padding: 0.9rem 1.5rem;
-      border-radius: 9999px;
-      background: linear-gradient(135deg, #ff4500, #ff6b35);
-      color: #fff;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-align: center;
-      box-shadow: 0 0 40px rgba(255, 69, 0, 0.3);
-      transition: opacity 0.2s;
-    }
-    .mobile-soon-cta:active { opacity: 0.8; }
-    .mobile-soon-copy {
-      font-size: 0.62rem;
-      color: #374151;
-      margin: 0;
+    /* ═══════════════════════════════════════════
+       VARIABLES & TOKENS
+    ═══════════════════════════════════════════ */
+    :host {
+      --ember: #ff4500;
+      --flame: #ff6b35;
+      --cream: #f5f5f5;
+      --mute: #9ca3af;
+      --glass-bg: rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.08);
     }
 
-    /* ──────────────────────────────────────────────
-       DESKTOP WRAPPER  (hidden on mobile)
-    ────────────────────────────────────────────── */
-    .desktop-wrap { display: none; }
-
-    @media (min-width: 768px) {
-      .mobile-soon { display: none; }
-      .desktop-wrap { display: block; }
-    }
-
-    /* ── Navbar ───────────────────────────────────── */
-    .nav {
+    /* ═══════════════════════════════════════════
+       NAVBAR
+    ═══════════════════════════════════════════ */
+    .lp-nav {
       position: sticky;
       top: 0;
       z-index: 40;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1rem 2rem;
+      padding: 0.85rem 1.25rem;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      background: rgba(0,0,0,0.5);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: rgba(0,0,0,0.55);
+      border-bottom: 1px solid var(--glass-border);
+      gap: 1rem;
     }
-    .nav-left { display: flex; align-items: center; gap: 0.75rem; }
-    .nav-fav { width: 28px; height: 28px; border-radius: 6px; }
-    .nav-brand {
+    .lp-nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+    .lp-nav-fav { width: 24px; height: 24px; border-radius: 5px; }
+    .lp-nav-brand {
       font-family: monospace;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 700;
-      letter-spacing: 0.25em;
-      color: #f5f5f5;
+      letter-spacing: 0.22em;
+      color: var(--cream);
     }
-    .nav-links { display: flex; gap: 2rem; }
-    .nav-links a {
+    .lp-nav-links {
+      display: none;
+      gap: 1.75rem;
+    }
+    .lp-nav-link {
       font-size: 0.75rem;
       font-weight: 500;
-      color: #9ca3af;
+      color: var(--mute);
+      cursor: pointer;
       transition: color 0.15s;
     }
-    .nav-links a:hover { color: #f5f5f5; }
-    .nav-actions { display: flex; align-items: center; gap: 0.75rem; }
+    .lp-nav-link:hover { color: var(--cream); }
+    .lp-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+    @media (min-width: 640px) {
+      .lp-nav { padding: 1rem 2rem; }
+      .lp-nav-links { display: flex; }
+    }
 
-    /* ── Buttons ──────────────────────────────────── */
+    /* ═══════════════════════════════════════════
+       BUTTONS
+    ═══════════════════════════════════════════ */
     .btn-primary {
       display: inline-flex;
       align-items: center;
-      padding: 0.55rem 1.25rem;
+      padding: 0.5rem 1rem;
       border-radius: 9999px;
-      background: linear-gradient(135deg, #ff4500, #ff6b35);
+      background: linear-gradient(135deg, var(--ember), var(--flame));
       color: #fff;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 600;
-      box-shadow: 0 0 60px rgba(255,69,0,0.2);
+      box-shadow: 0 0 50px rgba(255,69,0,0.2);
       transition: opacity 0.15s, transform 0.1s;
+      white-space: nowrap;
     }
     .btn-primary:active { transform: scale(0.97); }
     .btn-ghost {
       display: inline-flex;
       align-items: center;
-      padding: 0.55rem 1.25rem;
+      padding: 0.5rem 1rem;
       border-radius: 9999px;
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #f5f5f5;
-      font-size: 0.75rem;
+      border: 1px solid var(--glass-border);
+      color: var(--cream);
+      font-size: 0.72rem;
       font-weight: 500;
       transition: background 0.15s;
+      white-space: nowrap;
     }
     .btn-ghost:hover { background: rgba(255,255,255,0.05); }
-    .btn-lg { padding: 0.85rem 2rem; font-size: 0.85rem; }
+    .btn-lg {
+      padding: 0.85rem 1.75rem;
+      font-size: 0.85rem;
+    }
+    .lp-link-btn { cursor: pointer; }
+    @media (max-width: 480px) {
+      .btn-primary, .btn-ghost { font-size: 0.65rem; padding: 0.45rem 0.75rem; }
+      .btn-lg { padding: 0.85rem 1.25rem; font-size: 0.8rem; }
+    }
 
-    /* ── Hero ─────────────────────────────────────── */
-    .hero {
+    /* ═══════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════ */
+    .lp-hero {
       max-width: 64rem;
       margin: 0 auto;
-      padding: 7rem 2rem 5rem;
+      padding: 3.5rem 1.25rem 3rem;
       text-align: center;
     }
-    .hero-badge {
+    .lp-hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 0.72rem;
-      color: #9ca3af;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.04);
+      font-size: 0.7rem;
+      color: var(--mute);
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
       border-radius: 9999px;
       padding: 0.35rem 0.85rem;
       margin-bottom: 1.5rem;
     }
-    .hero-dot {
+    .lp-badge-dot {
       display: inline-block;
-      width: 7px; height: 7px;
+      width: 6px; height: 6px;
       border-radius: 9999px;
-      background: #ff4500;
-      animation: pulse-dot 2s ease-in-out infinite;
+      background: var(--ember);
+      animation: badge-pulse 2s ease-in-out infinite;
+      flex-shrink: 0;
     }
-    .hero-title {
-      font-size: clamp(2.5rem, 5vw, 4rem);
+    @keyframes badge-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(1.5); }
+    }
+    .lp-hero-title {
+      font-size: clamp(2rem, 7vw, 4rem);
       font-weight: 900;
       line-height: 1.08;
       letter-spacing: -0.04em;
-      color: #f5f5f5;
+      color: var(--cream);
       margin-bottom: 1.25rem;
     }
-    .hero-accent {
-      background: linear-gradient(135deg, #ff4500, #ff6b35, #fbbf24);
+    .lp-hero-accent {
+      background: linear-gradient(135deg, var(--ember), var(--flame), #fbbf24);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .hero-sub {
-      font-size: 0.95rem;
-      color: #9ca3af;
+    .lp-hero-sub {
+      font-size: clamp(0.8rem, 2.5vw, 1rem);
+      color: var(--mute);
       line-height: 1.7;
       max-width: 40rem;
-      margin: 0 auto 2.5rem;
+      margin: 0 auto 2rem;
     }
-    .hero-actions {
+    .lp-hero-actions {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
-      gap: 1rem;
-      margin-bottom: 5rem;
+      gap: 0.75rem;
+      margin-bottom: 3rem;
+    }
+    @media (min-width: 640px) {
+      .lp-hero { padding: 5rem 2rem 4rem; }
+      .lp-hero-actions { margin-bottom: 4rem; }
     }
 
-    /* ── App Preview Card ─────────────────────────── */
-    .preview-card {
-      background: rgba(255,255,255,0.04);
+    /* ── App Preview ──────────────────────────── */
+    .lp-preview {
+      background: var(--glass-bg);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 20px;
-      padding: 2rem;
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.25rem;
       text-align: left;
       max-width: 56rem;
       margin: 0 auto;
     }
-    .preview-bar {
+    .lp-preview-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      margin-bottom: 1.5rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--glass-border);
+      margin-bottom: 1.25rem;
     }
-    .preview-dots { display: flex; align-items: center; gap: 0.4rem; }
-    .dot-r { width: 10px; height: 10px; border-radius: 9999px; background: rgba(239,68,68,0.7); }
-    .dot-y { width: 10px; height: 10px; border-radius: 9999px; background: rgba(234,179,8,0.7); }
-    .dot-g { width: 10px; height: 10px; border-radius: 9999px; background: rgba(34,197,94,0.7); }
-    .preview-url {
+    .lp-preview-dots { display: flex; align-items: center; gap: 0.35rem; }
+    .dot-r { width: 9px; height: 9px; border-radius: 9999px; background: rgba(239,68,68,0.65); }
+    .dot-y { width: 9px; height: 9px; border-radius: 9999px; background: rgba(234,179,8,0.65); }
+    .dot-g { width: 9px; height: 9px; border-radius: 9999px; background: rgba(34,197,94,0.65); }
+    .lp-preview-url {
       font-family: monospace;
-      font-size: 0.68rem;
+      font-size: 0.6rem;
       color: #6b7280;
-      margin-left: 0.6rem;
+      margin-left: 0.5rem;
+      display: none;
     }
-    .preview-tag {
+    .lp-preview-tag {
       font-family: monospace;
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       color: #6b7280;
-      padding: 0.2rem 0.65rem;
+      padding: 0.18rem 0.55rem;
       border-radius: 9999px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
     }
-    .preview-stats {
+    .lp-stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-bottom: 1.5rem;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
     }
-    .stat-cell {
+    .lp-stat {
       background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 12px;
-      padding: 1rem;
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 0.75rem;
     }
-    .stat-label { font-size: 0.68rem; color: #6b7280; margin-bottom: 0.25rem; }
-    .stat-val { font-size: 1.5rem; font-weight: 700; }
-    .stat-white { color: #f5f5f5; }
-    .stat-ember { color: #ff4500; }
-    .stat-green { color: #4ade80; }
-    .preview-plan {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 12px;
-      padding: 1rem;
+    .lp-stat-label {
+      font-size: 0.6rem;
+      color: #6b7280;
+      margin-bottom: 0.2rem;
+      line-height: 1.3;
     }
-    .plan-head {
-      font-size: 0.65rem;
+    .lp-stat-val { font-size: 1.3rem; font-weight: 700; }
+    .lp-stat-white { color: var(--cream); }
+    .lp-stat-ember { color: var(--ember); }
+    .lp-stat-green { color: #4ade80; }
+    .lp-plan {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 0.85rem;
+    }
+    .lp-plan-head {
+      font-size: 0.6rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: #6b7280;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.65rem;
     }
-    .plan-row {
+    .lp-plan-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.65rem 0.85rem;
-      border-radius: 8px;
+      padding: 0.55rem 0.75rem;
+      border-radius: 7px;
       background: rgba(0,0,0,0.35);
-      font-size: 0.72rem;
-      color: #f5f5f5;
-      margin-bottom: 0.5rem;
+      font-size: 0.65rem;
+      color: var(--cream);
+      margin-bottom: 0.4rem;
+      gap: 0.5rem;
     }
-    .plan-row:last-child { margin-bottom: 0; }
-    .plan-done  { border-left: 2px solid #ff4500; }
-    .plan-inprog { border-left: 2px solid #ff6b35; }
-    .plan-badge { font-size: 0.62rem; font-weight: 600; }
-    .badge-done   { color: #4ade80; }
-    .badge-inprog { color: #fbbf24; }
+    .lp-plan-row:last-child { margin-bottom: 0; }
+    .lp-plan-done  { border-left: 2px solid var(--ember); }
+    .lp-plan-prog  { border-left: 2px solid var(--flame); }
+    .lp-plan-badge { font-size: 0.58rem; font-weight: 600; flex-shrink: 0; }
+    .badge-done { color: #4ade80; }
+    .badge-prog { color: #fbbf24; }
+    @media (min-width: 640px) {
+      .lp-preview { padding: 2rem; border-radius: 20px; }
+      .lp-preview-url { display: inline; }
+      .lp-stat-val { font-size: 1.5rem; }
+      .lp-plan-row { font-size: 0.72rem; padding: 0.65rem 0.85rem; }
+    }
 
-    /* ── Features Section ─────────────────────────── */
-    .features-section {
+    /* ═══════════════════════════════════════════
+       SECTIONS COMMUNES
+    ═══════════════════════════════════════════ */
+    .lp-section {
       max-width: 80rem;
       margin: 0 auto;
-      padding: 6rem 2rem;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 3.5rem 1.25rem;
+      border-top: 1px solid var(--glass-border);
     }
-    .section-head {
+    .lp-section-head {
       text-align: center;
-      margin-bottom: 4rem;
+      margin-bottom: 2.5rem;
     }
-    .section-head h2 {
-      font-size: 1.75rem;
+    .lp-section-head h2 {
+      font-size: clamp(1.3rem, 4vw, 1.75rem);
       font-weight: 800;
-      color: #f5f5f5;
-      margin-bottom: 0.75rem;
+      color: var(--cream);
+      margin-bottom: 0.65rem;
     }
-    .section-head p {
-      font-size: 0.85rem;
-      color: #9ca3af;
+    .lp-section-head p {
+      font-size: 0.82rem;
+      color: var(--mute);
     }
-    .features-grid {
+    @media (min-width: 640px) {
+      .lp-section { padding: 5rem 2rem; }
+      .lp-section-head { margin-bottom: 3.5rem; }
+    }
+
+    /* ── Features Grid ────────────────────────── */
+    .lp-features-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.25rem;
+      grid-template-columns: 1fr;
+      gap: 1rem;
     }
-    .feat-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
-      padding: 1.5rem;
+    @media (min-width: 480px) {
+      .lp-features-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 900px) {
+      .lp-features-grid { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    }
+    .lp-feat-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.25rem;
       transition: border-color 0.2s;
     }
-    .feat-card:hover { border-color: rgba(255,255,255,0.18); }
-    .feat-card.feat-soon {
+    .lp-feat-card:hover { border-color: rgba(255,255,255,0.18); }
+    .lp-feat-card.lp-feat-soon {
       border-color: rgba(255,69,0,0.2);
       background: rgba(255,69,0,0.04);
     }
-    .feat-index {
+    .lp-feat-num {
       display: block;
       font-family: monospace;
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       font-weight: 700;
       letter-spacing: 0.18em;
       color: rgba(255,255,255,0.18);
       margin-bottom: 0.85rem;
     }
-    .feat-head {
+    .lp-feat-head {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
       gap: 0.5rem;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.55rem;
     }
-    .feat-head h3 {
+    .lp-feat-head h3 {
       font-size: 0.82rem;
       font-weight: 700;
-      color: #f5f5f5;
+      color: var(--cream);
     }
-    .feat-badge {
-      font-size: 0.58rem;
+    .lp-feat-badge {
+      font-size: 0.55rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      padding: 0.2rem 0.5rem;
+      padding: 0.18rem 0.5rem;
       border-radius: 9999px;
       background: rgba(255,69,0,0.15);
-      color: #ff4500;
+      color: var(--ember);
       border: 1px solid rgba(255,69,0,0.3);
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .feat-card p {
+    .lp-feat-card p {
       font-size: 0.72rem;
-      color: #9ca3af;
+      color: var(--mute);
       line-height: 1.6;
     }
 
-    /* ── Method Section ───────────────────────────── */
-    .method-section {
-      max-width: 56rem;
-      margin: 0 auto;
-      padding: 4rem 2rem;
-      border-top: 1px solid rgba(255,255,255,0.05);
-    }
-    .method-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 20px;
-      padding: 3.5rem;
+    /* ── Method Card ──────────────────────────── */
+    .lp-method-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 2rem 1.5rem;
       text-align: center;
     }
-    .method-label {
+    .lp-method-label {
       display: block;
       font-family: monospace;
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       font-weight: 700;
-      letter-spacing: 0.25em;
-      color: #ff4500;
+      letter-spacing: 0.22em;
+      color: var(--ember);
       margin-bottom: 1rem;
     }
-    .method-card h2 {
-      font-size: 1.75rem;
+    .lp-method-card h2 {
+      font-size: clamp(1.2rem, 4vw, 1.75rem);
       font-weight: 800;
-      color: #f5f5f5;
+      color: var(--cream);
       margin-bottom: 1rem;
     }
-    .method-card p {
-      font-size: 0.85rem;
-      color: #9ca3af;
+    .lp-method-card p {
+      font-size: 0.82rem;
+      color: var(--mute);
       line-height: 1.7;
       max-width: 36rem;
-      margin: 0 auto 2rem;
+      margin: 0 auto 1.75rem;
+    }
+    @media (min-width: 640px) {
+      .lp-method-card { padding: 3.5rem; }
     }
 
-    /* ── FAQ Section ──────────────────────────────── */
-    .faq-section {
-      max-width: 56rem;
-      margin: 0 auto;
-      padding: 4rem 2rem;
-      border-top: 1px solid rgba(255,255,255,0.05);
-    }
-    .faq-section h2 {
-      font-size: 1.5rem;
+    /* ── FAQ ──────────────────────────────────── */
+    .lp-faq-title {
+      font-size: clamp(1.2rem, 4vw, 1.5rem);
       font-weight: 700;
-      color: #f5f5f5;
+      color: var(--cream);
       text-align: center;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
     }
-    .faq-list { display: flex; flex-direction: column; gap: 0.75rem; }
-    .faq-item {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
-      padding: 1.25rem 1.5rem;
+    .lp-faq-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .lp-faq-item {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.1rem 1.25rem;
     }
-    .faq-item h3 {
+    .lp-faq-item h3 {
       font-size: 0.82rem;
       font-weight: 700;
-      color: #f5f5f5;
-      margin-bottom: 0.5rem;
+      color: var(--cream);
+      margin-bottom: 0.45rem;
     }
-    .faq-item p {
+    .lp-faq-item p {
       font-size: 0.72rem;
-      color: #9ca3af;
+      color: var(--mute);
       line-height: 1.65;
     }
 
-    /* ── Footer ───────────────────────────────────── */
-    .site-footer {
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding: 2rem;
+    /* ── Footer ───────────────────────────────── */
+    .lp-footer {
+      border-top: 1px solid var(--glass-border);
+      padding: 2rem 1.25rem;
       text-align: center;
     }
-    .footer-logo {
+    .lp-footer-logo {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
       margin-bottom: 0.75rem;
     }
-    .footer-logo img {
-      width: 18px; height: 18px;
-      border-radius: 4px;
-    }
-    .footer-logo span {
+    .lp-footer-logo img { width: 18px; height: 18px; border-radius: 4px; }
+    .lp-footer-logo span {
       font-family: monospace;
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       font-weight: 700;
-      letter-spacing: 0.25em;
-      color: #f5f5f5;
+      letter-spacing: 0.22em;
+      color: var(--cream);
     }
-    .site-footer p {
-      font-size: 0.65rem;
+    .lp-footer p {
+      font-size: 0.62rem;
       color: #4b5563;
       margin-bottom: 0.75rem;
     }
-    .footer-links {
+    .lp-footer-links {
       display: flex;
       justify-content: center;
       gap: 1rem;
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       color: #4b5563;
     }
-    .footer-links a {
-      color: #6b7280;
-      transition: color 0.15s;
-    }
-    .footer-links a:hover { color: #f5f5f5; }
+    .lp-footer-links a { color: #6b7280; transition: color 0.15s; }
+    .lp-footer-links a:hover { color: var(--cream); }
   `]
 })
 export class LandingPage {
@@ -751,7 +658,7 @@ export class LandingPage {
     {
       num: '06',
       title: 'Application Mobile',
-      desc: 'L\'application native iOS & Android est en cours de finalisation. En attendant, la plateforme Web reste disponible.',
+      desc: 'L\'application native iOS & Android est en cours de finalisation. La plateforme Web est déjà accessible sur smartphone.',
       soon: true
     }
   ];
@@ -763,11 +670,11 @@ export class LandingPage {
     },
     {
       q: 'Comment est calculé le score de procrastination ?',
-      a: 'Le score est établi en comparant le volume de tâches planifiées au cours de vos sessions et le nombre de tâches réellement clôturées ou décalées.'
+      a: 'Le score est établi en comparant le volume de tâches planifiées et le nombre de tâches réellement clôturées ou décalées.'
     },
     {
-      q: 'Quand l\'application mobile sera-t-elle disponible ?',
-      a: 'L\'application native pour iOS et Android est actuellement en développement (Coming Soon). En attendant, le site Web est adapté pour une utilisation mobile.'
+      q: 'Quand l\'application mobile native sera-t-elle disponible ?',
+      a: 'L\'application native iOS et Android est en développement. En attendant, Momentum est déjà accessible et utilisable depuis un navigateur mobile.'
     }
   ];
 
