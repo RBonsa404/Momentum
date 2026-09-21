@@ -2,23 +2,22 @@ spring:
   application:
     name: momentum-server
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/momentum}
-    username: ${POSTGRES_USER:momentum}
-    password: ${POSTGRES_PASSWORD:momentum}
+    url: ${DATABASE_URL:jdbc:h2:mem:momentum;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;CASE_INSENSITIVE_IDENTIFIERS=TRUE}
+    username: ${POSTGRES_USER:sa}
+    password: ${POSTGRES_PASSWORD:}
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
       connection-timeout: 30000
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     open-in-view: false
     properties:
       hibernate.jdbc.time_zone: UTC
-      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     enabled: true
-    baseline-on-migrate: false
+    baseline-on-migrate: true
 
 server:
   port: ${PORT:8080}
