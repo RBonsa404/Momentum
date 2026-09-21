@@ -56,9 +56,9 @@ import { HaloBackgroundComponent } from '../../shared/ui/halo-background';
           <span class="nav-brand">MOMENTUM</span>
         </div>
         <nav class="nav-links">
-          <a href="#features">Fonctionnalités</a>
-          <a href="#method">La Méthode</a>
-          <a href="#faq">FAQ</a>
+          <a (click)="scrollTo('features')" style="cursor:pointer">Fonctionnalités</a>
+          <a (click)="scrollTo('method')" style="cursor:pointer">La Méthode</a>
+          <a (click)="scrollTo('faq')" style="cursor:pointer">FAQ</a>
         </nav>
         <div class="nav-actions">
           <a routerLink="/login" class="btn-ghost">Connexion</a>
@@ -87,7 +87,7 @@ import { HaloBackgroundComponent } from '../../shared/ui/halo-background';
           <a routerLink="/login" [queryParams]="{ mode: 'register' }" class="btn-primary btn-lg">
             Accéder à l'application →
           </a>
-          <a href="#features" class="btn-ghost btn-lg">En savoir plus</a>
+          <a (click)="scrollTo('features')" class="btn-ghost btn-lg" style="cursor:pointer">En savoir plus</a>
         </div>
 
         <!-- App Preview -->
@@ -770,4 +770,11 @@ export class LandingPage {
       a: 'L\'application native pour iOS et Android est actuellement en développement (Coming Soon). En attendant, le site Web est adapté pour une utilisation mobile.'
     }
   ];
+
+  scrollTo(id: string): void {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
 }
