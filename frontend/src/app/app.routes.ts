@@ -3,6 +3,10 @@ import { authGuard } from './core/auth.guard';
 
 export const routes: Routes = [
   {
+    path: 'welcome',
+    loadComponent: () => import('./features/landing/landing.page').then((m) => m.LandingPage)
+  },
+  {
     path: 'login',
     loadComponent: () => import('./features/auth/login.page').then((m) => m.LoginPage)
   },
@@ -34,5 +38,5 @@ export const routes: Routes = [
       }
     ]
   },
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: 'welcome' }
 ];

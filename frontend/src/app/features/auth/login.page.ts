@@ -1,18 +1,22 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HaloBackgroundComponent } from '../../shared/ui/halo-background';
 import { AuthStore } from '../../core/auth.store';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, HaloBackgroundComponent],
+  imports: [FormsModule, RouterLink, HaloBackgroundComponent],
   template: `
     <ui-halo-background />
     <div class="flex min-h-screen items-center justify-center px-4 py-8 sm:py-12">
-      <form class="glass glow w-full max-w-md p-6 sm:p-10 text-center" (ngSubmit)="submit()">
-        <p class="mb-2 text-xs tracking-[0.35em] text-mute">MOMENTUM</p>
+      <form class="glass glow w-full max-w-md p-6 sm:p-10 text-center relative" (ngSubmit)="submit()">
+        <a routerLink="/welcome" class="absolute top-4 left-5 text-xs text-mute hover:text-cream transition-colors flex items-center gap-1">
+          ← Retour
+        </a>
+
+        <p class="mb-2 text-xs tracking-[0.35em] text-mute uppercase mt-2 sm:mt-0">MOMENTUM</p>
         <h1 class="hero-title mb-6 text-2xl sm:text-4xl">
           {{ isRegister() ? 'Crée ton compte' : 'Entre dans ta journée' }}
         </h1>
@@ -72,14 +76,18 @@ import { AuthStore } from '../../core/auth.store';
           <p class="mb-4 text-xs sm:text-sm text-ember leading-relaxed">{{ error() }}</p>
         }
 
-        <button class="accent-grad glow w-full rounded-full py-3.5 text-sm font-semibold text-white cursor-pointer active:scale-95 transition-transform" type="submit">
+        <button class="accent-grad glow w-full rounded-full py-3.5 text-sm font-semibold text-white cursor-pointer active:scale-95 transition-transform mb-4" type="submit">
           {{ isRegister() ? 'Créer mon compte' : 'Se connecter' }}
         </button>
+
+        <p class="text-xs text-mute">
+          En continuant, vous acceptez les conditions d'utilisation de Momentum.
+        </p>
       </form>
     </div>
   `
 })
-export class LoginPage {
+export class LoginPage implements OnInit {
   isRegister = signal(false);
   displayName = '';
   email = '';
@@ -88,8 +96,17 @@ export class LoginPage {
 
   constructor(
     private readonly auth: AuthStore,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
   ) {}
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      if (params['mode'] === 'register') {
+        this.isRegister.set(true);
+      }
+    });
+  }
 
   setMode(registerMode: boolean): void {
     this.isRegister.set(registerMode);
